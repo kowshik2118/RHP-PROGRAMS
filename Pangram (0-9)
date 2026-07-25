@@ -1,0 +1,30 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+bool isNumberPangram(const std::string& str) {
+    std::vector<bool> digits(10, false);
+    int count = 0;
+
+    for (char ch : str) {
+        if (ch >= '0' && ch <= '9') {
+            int index = ch - '0';
+            if (!digits[index]) {
+                digits[index] = true;
+                count++;
+            }
+        }
+    }
+    return count == 10;
+}
+
+int main() {
+    std::string text = "The quick brown fox jumps over 1234567890";
+    
+    if (isNumberPangram(text)) {
+        std::cout << "The string is a 0-9 pangram." << std::endl;
+    } else {
+        std::cout << "The string is NOT a 0-9 pangram." << std::endl;
+    }
+    return 0;
+}
