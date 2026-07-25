@@ -1,31 +1,27 @@
-#include <stdio.h>
+#include <iostream>
+#include <vector>
+#include <cctype>
 
-int main()
-{
-    char str[1000001];
-    scanf("%s", str);
+using namespace std;
 
-    int flag = 0;
-
-    for(int i = 0; str[i]; i++)
-    {
-        // For lowercase a-z
-        if(str[i] >= 'a' && str[i] <= 'z')
-        {
-            flag = flag | (1 << (str[i] - 'a'));
-        }
-
-        // For uppercase A-Z
-        else if(str[i] >= 'A' && str[i] <= 'Z')
-        {
-            flag = flag | (1 << (str[i] - 'A'));
+bool checkPangram(const string &s) {
+    vector<bool> mark(26, false);
+    for (char c : s) {
+        if (isalpha(c)) {
+            mark[tolower(c) - 'a'] = true;
         }
     }
+    for (bool present : mark) {
+        if (!present) return false;
+    }
+    return true;
+}
 
-    if(flag == (1 << 26) - 1)
-        printf("Yes");
+int main() {
+    string str = "The quick brown fox jumps over the lazy dog";
+    if (checkPangram(str))
+        cout << "Yes, it is a pangram." << endl;
     else
-        printf("No");
-
+        cout << "No, it is not a pangram." << endl;
     return 0;
 }
