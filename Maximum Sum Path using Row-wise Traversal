@@ -1,47 +1,65 @@
-#include <iostream>
-using namespace std;
+import java.util.*;
 
-int main() {
+public class Main {
 
-    // Matrix initialization
-    int mat[4][5] = {
-        {10, 20, 30, 40, 50},
-        {1,  2,  3,  4,  5},
-        {6,  7,  8,  9, 25},
-        {100, 50, 40, 30, 20}
-    };
+    public static void main(String[] args) {
 
-    int rows = 4, cols = 5;
+        Scanner sc = new Scanner(System.in);
 
-    // Input row and column index
-    int r, c;
-    cin >> r >> c;
+        int R = sc.nextInt();
+        int C = sc.nextInt();
 
-    // 8 directions
-    int dir[8][2] = {
-        {-1, -1}, {-1, 0}, {-1, 1},
-        { 0, -1},          { 0, 1},
-        { 1, -1}, { 1, 0}, { 1, 1}
-    };
+        int grid[][] = new int[R][C];
+        long dp[][] = new long[R + 1][C];
 
-    int sum = 0;
+        // Input and initialize first row
+        for (int row = 0; row < R; row++) {
+            for (int col = 0; col < C; col++) {
 
-    // Traverse all 8 neighbors
-    for (int k = 0; k < 8; k++) {
+                grid[row][col] = sc.nextInt();
 
-        int nr = r + dir[k][0];
-        int nc = c + dir[k][1];
-
-        // Boundary check
-        if (nr >= 0 && nr < rows &&
-            nc >= 0 && nc < cols) {
-
-            sum += mat[nr][nc];
+                if (row == 0) {
+                    dp[row][col] = grid[row][col];
+                }
+            }
         }
+
+        // DP calculation
+        for (int row = 1; row < R; row++) {
+
+            long fsmax[] = getFSMax(dp, row - 1, C);
+
+            for (int col = 0; col < C; col++) {
+
+                dp[row][col] = grid[row][col] +
+                        (dp[row - 1][col] == fsmax[0]
+                                ? fsmax[1]
+                                : fsmax[0]);
+            }
+        }
+
+        // Print the largest in last row
+        System.out.println(getFSMax(dp, R - 1, C)[0]);
     }
 
-    // Output sum
-    cout << "Sum of neighbors = " << sum;
+    private static long[] getFSMax(long[][] dp, int row, int C) {
 
-    return 0;
+        long fmax = Math.max(dp[row][0], dp[row][1]);
+        long smax = Math.min(dp[row][0], dp[row][1]);
+
+        for (int col = 2; col < C; col++) {
+
+            if (dp[row][col] > fmax) {
+
+                smax = fmax;
+                fmax = dp[row][col];
+
+            } else if (dp[row][col] > smax) {
+
+                smax = dp[row][col];
+            }
+        }
+
+        return new long[]{fmax, smax};
+    }
 }
